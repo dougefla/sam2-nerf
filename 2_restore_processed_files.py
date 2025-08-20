@@ -6,7 +6,7 @@ import json
 mydir = r"Laptop\9912"
 input(f"WARNING: {mydir}!!!!")
 processed_dir = os.path.join(os.getcwd(), r"data\new\sapien", mydir, "masks")
-record_file = "mapping.json"
+record_file = os.path.join(os.getcwd(), r"data\new\sapien", mydir, "images", "mapping.json")
 input_root = os.path.join(os.getcwd(), r"data\load\sapien", mydir)
 
 # Load mapping
