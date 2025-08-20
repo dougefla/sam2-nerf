@@ -7,17 +7,21 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, TextBox
 from sam2.build_sam import build_sam2_video_predictor
-from pathlib import Path
+from prepare_images import prepare_images
 
 # ========== Config ==========
 mydir = r"Laptop\9912"
-video_dir = os.path.join(os.getcwd(), r"data\load\sapien", mydir)
+video_dir = os.path.join(os.getcwd(), r"data\new\sapien", mydir, "images")
 checkpoint_path = "checkpoints/sam2.1_hiera_large.pt"
 config_path = "configs/sam2.1/sam2.1_hiera_l.yaml"
-output_mask_dir = os.path.join("./nerf_masks/", mydir)
+output_mask_dir = os.path.join(os.getcwd(), r"data\new\sapien", mydir, "masks")
 os.makedirs(output_mask_dir, exist_ok=False)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# ========== Run Prepare Images ==========
+print("Preparing images...")
+prepare_images(mydir)
 
 # ========== Load SAM2 ==========
 print("Loading SAM2...")
@@ -217,6 +221,8 @@ def restart(event=None):
     update_display()
 
     print("✅ Session restarted.")
+
+
 # ========== GUI Setup ==========
 fig, ax = plt.subplots(figsize=(10, 7))
 plt.subplots_adjust(bottom=0.38)  # More space for 2 rows
@@ -257,6 +263,7 @@ ax_obj_id = plt.axes([0.23, 0.12, 0.12, 0.05])
 text_box = TextBox(ax_obj_id, "Obj ID", initial=str(current_obj_id))
 text_box.on_submit(set_obj_id)
 
+
 # === Jump to frame ===
 def jump_to_frame(text):
     global current_frame
@@ -270,6 +277,7 @@ def jump_to_frame(text):
     except ValueError:
         print("❌ Invalid frame index")
 
+
 ax_jump_box = plt.axes([0.36, 0.12, 0.12, 0.05])
 jump_box = TextBox(ax_jump_box, "Jump to", initial=str(current_frame))
 jump_box.on_submit(jump_to_frame)
@@ -277,8 +285,6 @@ jump_box.on_submit(jump_to_frame)
 ax_jump_btn = plt.axes([0.49, 0.12, 0.1, 0.05])
 btn_jump = Button(ax_jump_btn, "Jump")
 btn_jump.on_clicked(lambda e: jump_to_frame(jump_box.text))
-
-
 
 
 print("✅ GUI ready.")
